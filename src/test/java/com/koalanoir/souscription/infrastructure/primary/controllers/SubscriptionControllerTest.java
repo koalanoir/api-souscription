@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koalanoir.souscription.application.usecases.CreateSubscriptionUseCase;
 import com.koalanoir.souscription.application.usecases.CreateUserUseCase;
 import com.koalanoir.souscription.domain.models.Subscription;
+import com.koalanoir.souscription.domain.models.SubscriptionStatus;
 import com.koalanoir.souscription.domain.models.User;
-import com.koalanoir.souscription.infrastructure.secondary.persistence.models.SubscriptionStatus;
 
 @ExtendWith(MockitoExtension.class)
 class SubscriptionControllerTest {
@@ -36,8 +36,6 @@ class SubscriptionControllerTest {
 
     @InjectMocks
     private SubscriptionController subscriptionController;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("subscribe should create user and subscription then return 200 with response body")
@@ -64,8 +62,8 @@ class SubscriptionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.subscriptionId").value("sub-id"))
-                .andExpect(jsonPath("$.userId").value("user-id"));
+            .andExpect(jsonPath("$.id").value("sub-id"))
+            .andExpect(jsonPath("$.clientId").value("user-id"));
 
         verify(createUserUseCase, times(1)).handle(any());
         verify(createSubscriptionUseCase, times(1)).handle(any(), any(User.class));

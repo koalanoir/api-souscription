@@ -5,10 +5,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.koalanoir.souscription.domain.models.Subscription;
+import com.koalanoir.souscription.domain.models.SubscriptionStatus;
 import com.koalanoir.souscription.domain.models.User;
 import com.koalanoir.souscription.domain.repository.SubscriptionRepository;
-import com.koalanoir.souscription.infrastructure.primary.dtos.CreateSubscriptionRequest;
-import com.koalanoir.souscription.infrastructure.secondary.persistence.models.SubscriptionStatus;
 
 @Service
 public class CreateSubscriptionUseCase {
@@ -27,8 +26,7 @@ public class CreateSubscriptionUseCase {
         return repo.save(subscription);
     }
 
-    public Subscription handle(CreateSubscriptionRequest req, User user) {
-
-        return create(user.getId(), req.offerId(), SubscriptionStatus.ACTIVE);
+    public Subscription handle(CreateSubscriptionCommand command, User user) {
+        return create(user.getId(), command.offerId(), SubscriptionStatus.ACTIVE);
     }
 }

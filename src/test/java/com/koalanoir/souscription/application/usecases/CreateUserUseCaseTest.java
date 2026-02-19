@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.koalanoir.souscription.domain.models.User;
 import com.koalanoir.souscription.domain.repository.UserRepository;
-import com.koalanoir.souscription.infrastructure.primary.dtos.CreateSubscriptionRequest;
 
 @ExtendWith(MockitoExtension.class)
 class CreateUserUseCaseTest {
@@ -77,22 +76,20 @@ class CreateUserUseCaseTest {
     }
 
     @Test
-    @DisplayName("handle should create user from CreateSubscriptionRequest data")
-    void handle_shouldCreateUserFromRequest() {
+    @DisplayName("handle should create user from application command data")
+    void handle_shouldCreateUserFromCommand() {
         // Arrange
-        CreateSubscriptionRequest request = new CreateSubscriptionRequest(
-                "OFFER_PREMIUM",
+        CreateUserCommand command = new CreateUserCommand(
                 "John Doe",
-                "john.doe@example.com",
                 "0600000000",
-                "PREMIUM");
+                "john.doe@example.com");
 
-        User persistedUser = new User("generated-id", request.clientName(), request.phoneNumber(), request.email());
-        when(userRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+        User persistedUser = new User("generated-id", command.name(), command.phone(), command.email());
+        when(userRepository.findByEmail(command.email())).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(persistedUser);
 
         // Act
-        User result = createUserUseCase.handle(request);
+        User result = createUserUseCase.handle(command);
 
         // Assert
         assertNotNull(result);
@@ -102,8 +99,8 @@ class CreateUserUseCaseTest {
         verify(userRepository, times(1)).save(userCaptor.capture());
 
         User createdUser = userCaptor.getValue();
-        assertEquals(request.clientName(), createdUser.getName());
-        assertEquals(request.phoneNumber(), createdUser.getPhone());
-        assertEquals(request.email(), createdUser.getEmail());
+        assertEquals(command.name(), createdUser.getName());
+        assertEquals(command.phone(), createdUser.getPhone());
+        assertEquals(command.email(), createdUser.getEmail());
     }
 }

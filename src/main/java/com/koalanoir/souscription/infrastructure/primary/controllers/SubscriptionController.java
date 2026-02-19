@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.koalanoir.souscription.application.usecases.CreateSubscriptionCommand;
 import com.koalanoir.souscription.application.usecases.CreateSubscriptionUseCase;
+import com.koalanoir.souscription.application.usecases.CreateUserCommand;
 import com.koalanoir.souscription.application.usecases.CreateUserUseCase;
 import com.koalanoir.souscription.domain.models.Subscription;
 import com.koalanoir.souscription.domain.models.User;
@@ -61,8 +63,19 @@ public class SubscriptionController {
         })
         public ResponseEntity<CreateSubscriptionResponse> subscribe(@RequestBody CreateSubscriptionRequest req) {
 
-                User user = createUserUseCase.handle(req);
-                Subscription sub = createSubscriptionUseCase.handle(req, user);
+                CreateUserCommand userCommand = new CreateUserCommand(
+                        req.clientName(),
+                        req.phoneNumber(),
+                        req.email()
+                );
+
+                CreateSubscriptionCommand subscriptionCommand = new CreateSubscriptionCommand(
+                        req.offerId(),
+                        req.subscriptionType()
+                );
+
+                User user = createUserUseCase.handle(userCommand);
+                Subscription sub = createSubscriptionUseCase.handle(subscriptionCommand, user);
                 return ResponseEntity.ok(CreateSubscriptionResponse.fromDomain(sub, user));
         }
 

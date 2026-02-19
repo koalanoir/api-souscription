@@ -1,6 +1,5 @@
 package com.koalanoir.souscription.infrastructure.secondary.persistence.repositories;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;

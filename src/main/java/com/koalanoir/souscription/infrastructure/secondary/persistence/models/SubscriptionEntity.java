@@ -2,6 +2,8 @@ package com.koalanoir.souscription.infrastructure.secondary.persistence.models;
 
 import java.time.LocalDate;
 
+import com.koalanoir.souscription.domain.models.SubscriptionStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

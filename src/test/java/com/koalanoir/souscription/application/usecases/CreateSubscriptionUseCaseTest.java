@@ -20,10 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.koalanoir.souscription.domain.models.Subscription;
+import com.koalanoir.souscription.domain.models.SubscriptionStatus;
 import com.koalanoir.souscription.domain.models.User;
 import com.koalanoir.souscription.domain.repository.SubscriptionRepository;
-import com.koalanoir.souscription.infrastructure.primary.dtos.CreateSubscriptionRequest;
-import com.koalanoir.souscription.infrastructure.secondary.persistence.models.SubscriptionStatus;
 
 @ExtendWith(MockitoExtension.class)
 class CreateSubscriptionUseCaseTest {
@@ -80,19 +79,16 @@ class CreateSubscriptionUseCaseTest {
     void handle_shouldDelegateToCreateMethod() {
         // Arrange
         User user = new User("user123", "John Doe","0749923789","koalanoir@sg.com");
-        CreateSubscriptionRequest request = new CreateSubscriptionRequest(
+        CreateSubscriptionCommand command = new CreateSubscriptionCommand(
             "offer123",
-            "John Doe",
-            "koalanoir@sg.com",
-            "0749923789",
             "PREMIUM");
 
-        Subscription savedSubscription = new Subscription("generated-id", user.getId(), request.offerId(), SubscriptionStatus.ACTIVE);
+        Subscription savedSubscription = new Subscription("generated-id", user.getId(), command.offerId(), SubscriptionStatus.ACTIVE);
         when(subscriptionRepository.findById(user.getId())).thenReturn(Optional.empty());
         when(subscriptionRepository.save(any(Subscription.class))).thenReturn(savedSubscription);
 
         // Act
-        Subscription result = createSubscriptionUseCase.handle(request, user);
+        Subscription result = createSubscriptionUseCase.handle(command, user);
 
         // Assert
         assertNotNull(result);
@@ -104,7 +100,7 @@ class CreateSubscriptionUseCaseTest {
         Subscription createdSubscription = subscriptionCaptor.getValue();
         assertNotNull(createdSubscription.getId());
         assertEquals(user.getId(), createdSubscription.getUserId());
-        assertEquals(request.offerId(), createdSubscription.getOfferId());
+        assertEquals(command.offerId(), createdSubscription.getOfferId());
         assertEquals(SubscriptionStatus.ACTIVE, createdSubscription.getStatus());
     }
 }

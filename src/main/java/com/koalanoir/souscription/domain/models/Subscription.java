@@ -1,7 +1,5 @@
 package com.koalanoir.souscription.domain.models;
 
-import com.koalanoir.souscription.infrastructure.secondary.persistence.models.SubscriptionStatus;
-
 import lombok.Getter;
 
 @Getter

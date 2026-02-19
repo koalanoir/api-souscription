@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.koalanoir.souscription.domain.models.User;
 import com.koalanoir.souscription.domain.repository.UserRepository;
-import com.koalanoir.souscription.infrastructure.primary.dtos.CreateSubscriptionRequest;
 
 @Service
 public class CreateUserUseCase {
@@ -26,7 +25,7 @@ public class CreateUserUseCase {
         return repo.save(user);
     }
 
-    public User handle(CreateSubscriptionRequest req) {
-        return create(req.phoneNumber(), req.email(), req.clientName());
+    public User handle(CreateUserCommand command) {
+        return create(command.phone(), command.email(), command.name());
     }
 }
